@@ -3,6 +3,8 @@ import 'package:jdshop/pages/Home.dart';
 import 'package:jdshop/pages/Category.dart';
 import 'package:jdshop/pages/Cart.dart';
 import 'package:jdshop/pages/User.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/AppConfig.dart';
 
 
 class Tabs extends StatefulWidget {
@@ -17,6 +19,7 @@ class _TabsState extends State<Tabs> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: STANDARD_WIDTH, height: STANDARD_HEIGHT);
     return Scaffold(
       appBar: AppBar(
         title: Text("标题"),

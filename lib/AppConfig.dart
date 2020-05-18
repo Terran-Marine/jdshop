@@ -1,0 +1,2 @@
+const num STANDARD_WIDTH=450;
+const num STANDARD_HEIGHT=1334;
