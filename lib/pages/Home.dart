@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:banner_widget/widget/banner_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:dio/dio.dart';
+import 'package:jdshop/model/FocusModel.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,17 +10,44 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<BannerItem> bannerData = [];
+  List<FocusItemModel> bannerData = [];
 
   @override
   void initState() {
     super.initState();
-    bannerData.add(BannerItem.defaultBannerItem(
-        "https://www.itying.com/images/flutter/slide01.jpg", 'LeBron James'));
-    bannerData.add(BannerItem.defaultBannerItem(
-        "https://www.itying.com/images/flutter/slide02.jpg", 'LeBron&Wade'));
-    bannerData.add(BannerItem.defaultBannerItem(
-        "https://www.itying.com/images/flutter/slide03.jpg", 'LeBron VS Wade'));
+    _getBannerData();
+  }
+
+  _getBannerData() async {
+    Response respons = await Dio().get("http://jd.itying.com/api/focus");
+
+    try {
+      if (respons.statusCode == 200 && respons.data['result'] != null) {
+        bannerData.clear();
+
+        FocusModel focusModel = FocusModel.fromJson(respons.data);
+
+        setState(() {
+          bannerData = focusModel.result;
+          print(bannerData[0].title);
+
+          _convertBannerData();
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  List<BannerItem> _convertBannerData() {
+    List<BannerItem> temp = new List<BannerItem>();
+    if (bannerData.length > 0) {
+      bannerData.forEach((element) {
+        temp.add(BannerItem.defaultBannerItem("http://jd.itying.com/${element.pic.replaceAll('\\', '/')}", element.title));
+      });
+    }
+
+    return temp;
   }
 
   @override
@@ -71,7 +100,7 @@ class _HomePageState extends State<HomePage> {
       child: AspectRatio(
         aspectRatio: 2 / 1,
         child: BannerWidget(
-          bannerData,
+          _convertBannerData(),
           duration: 2500,
           height: 200.0,
           onBannerItemClick: (int position, BannerItem item) {
@@ -126,8 +155,8 @@ class _HomePageState extends State<HomePage> {
 //    num width = (ScreenUtil().setWidth(ScreenUtil.screenWidthDp) -
 //            ScreenUtil().setWidth(30)) /
 //        2;
-    print(ScreenUtil.screenWidthDp);
-    print(width);
+//    print(ScreenUtil.screenWidthDp);
+//    print(width);
 
     return Container(
       decoration: BoxDecoration(
