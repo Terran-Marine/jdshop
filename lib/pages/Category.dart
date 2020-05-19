@@ -10,7 +10,8 @@ class CategoryPage extends StatefulWidget {
   _CategoryPageState createState() => _CategoryPageState();
 }
 
-class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClientMixin {
+class _CategoryPageState extends State<CategoryPage>
+    with AutomaticKeepAliveClientMixin {
   List<CateItemModel> cateItemList = [];
   List<CateItemModel> cate2ItemList = [];
 
@@ -84,26 +85,32 @@ class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClie
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3, childAspectRatio: 1 / 1.3),
                 itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.only(
-                        left: ScreenUtil().setWidth(5),
-                        right: ScreenUtil().setWidth(5)),
-                    child: Column(
-                      children: <Widget>[
-                        AspectRatio(
-                          aspectRatio: 1 / 1.1,
-                          child: Image.network(
-                            formatImageUrl(cate2ItemList[index].pic),
-                            fit: BoxFit.cover,
+                  return InkWell(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          left: ScreenUtil().setWidth(5),
+                          right: ScreenUtil().setWidth(5)),
+                      child: Column(
+                        children: <Widget>[
+                          AspectRatio(
+                            aspectRatio: 1 / 1.1,
+                            child: Image.network(
+                              formatImageUrl(cate2ItemList[index].pic),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text(cate2ItemList[index].title),
-                          ),
-                        )
-                      ],
+                          Expanded(
+                            child: Center(
+                              child: Text(cate2ItemList[index].title),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/productList',
+                          arguments: {"cid": cate2ItemList[index].sId});
+                    },
                   );
                 }),
           ),
