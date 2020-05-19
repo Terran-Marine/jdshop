@@ -1,5 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/AppConfig.dart';
+import 'package:jdshop/model/ProductModel.dart';
+import 'package:jdshop/tools/HttpTool.dart';
+import 'package:jdshop/tools/ImageTool.dart';
 
 class ProductListPage extends StatefulWidget {
   Map arguments;
@@ -11,15 +16,18 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-
-  final GlobalKey<ScaffoldState> _scaffoldKey=new GlobalKey();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  List<ProductItemModel> productList = [];
+  int _page = 1;
+  String _sort = "all";
 
   int _selectTagIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    print(widget.arguments.toString());
+
+    _getProductListData();
   }
 
   @override
@@ -122,7 +130,6 @@ class _ProductListPageState extends State<ProductListPage> {
                   _scaffoldKey.currentState.openEndDrawer();
                   setState(() {
                     _selectTagIndex = 3;
-
                   });
                 },
               ),
@@ -154,7 +161,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       height: ScreenUtil().setWidth(110),
                       width: ScreenUtil().setWidth(110),
                       child: Image.network(
-                        "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1589879206800&di=7c4e11640f2776ef633682abbd56b7dd&imgtype=0&src=http%3A%2F%2Fimg3.doubanio.com%2Fview%2Fphoto%2Fl%2Fpublic%2Fp2524166120.jpg",
+                        formatImageUrl(productList[index].pic),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -169,7 +176,7 @@ class _ProductListPageState extends State<ProductListPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Text(
-                              "戴尔(DELL)灵越3670 英特尔酷睿i5 高性能 台式电脑整机(九代i5-9400 8G 256G)",
+                              productList[index].title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -202,7 +209,7 @@ class _ProductListPageState extends State<ProductListPage> {
                               ],
                             ),
                             Text(
-                              "¥990",
+                              "￥${productList[index].price}",
                               style: TextStyle(color: Colors.red, fontSize: 16),
                             )
                           ],
@@ -222,8 +229,23 @@ class _ProductListPageState extends State<ProductListPage> {
             ),
           );
         },
-        itemCount: 20,
+        itemCount: productList.length,
       ),
     );
+  }
+
+  void _getProductListData() async {
+    Response respons = await dio.get(API_PLIST, queryParameters: {
+      "cid": widget.arguments['cid'],
+      "page": _page,
+//      "sort": _sort,
+    });
+
+    if (respons.statusCode == 200 && respons.data != null) {
+      ProductModel productModel = ProductModel.fromJson(respons.data);
+      setState(() {
+        productList = productModel.result;
+      });
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:jdshop/model/FocusModel.dart';
 import 'package:jdshop/model/ProductModel.dart';
+import 'package:jdshop/tools/HttpTool.dart';
 
 import '../AppConfig.dart';
 
@@ -17,7 +18,6 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
   List<ProductItemModel> yourData = [];
   List<ProductItemModel> bestData = [];
 
-  Dio dio = new Dio();
 
   @override
   void initState() {

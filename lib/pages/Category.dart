@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jdshop/AppConfig.dart';
 import 'package:jdshop/model/CateModel.dart';
+import 'package:jdshop/tools/HttpTool.dart';
 import 'package:jdshop/tools/ImageTool.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -18,7 +19,6 @@ class _CategoryPageState extends State<CategoryPage>
   int _selectIndex = 0;
   String _selectCateId = "";
 
-  Dio dio = new Dio();
 
   @override
   void initState() {
@@ -138,7 +138,7 @@ class _CategoryPageState extends State<CategoryPage>
     if (_selectCateId.isNotEmpty) {
       Response respons =
           await dio.get(API_PCATE, queryParameters: {"pid": _selectCateId});
-      print(respons.data);
+//      print(respons.data);
       if (respons.statusCode == 200) {
         CateModel cateModel = CateModel.fromJson(respons.data);
         setState(() {

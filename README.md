@@ -1,9 +1,11 @@
 # jdshop
 
-Practice project
+仿京东商城项目
 
 ## API
 - [接口文档](https://www.itying.com/article-11.html)
+## tools
+- [json2dart](https://javiercbk.github.io/json_to_dart/)
 ## Getting Started
 
 This project is a starting point for a Flutter application.
