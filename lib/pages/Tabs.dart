@@ -13,7 +13,7 @@ class Tabs extends StatefulWidget {
 }
 
 class _TabsState extends State<Tabs> {
-  int _currentIndex=0;
+  int _currentIndex=1;
 
   List _PageList=[HomePage(),CategoryPage(),CartPage(),UserPage()];
 
