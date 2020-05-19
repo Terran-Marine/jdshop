@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
   List<FocusItemModel> bannerData = [];
   List<ProductItemModel> yourData = [];
   List<ProductItemModel> bestData = [];
@@ -299,4 +299,7 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

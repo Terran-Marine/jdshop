@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jdshop/AppConfig.dart';
 import 'package:jdshop/model/CateModel.dart';
+import 'package:jdshop/tools/ImageTool.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
   _CategoryPageState createState() => _CategoryPageState();
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _CategoryPageState extends State<CategoryPage> with AutomaticKeepAliveClientMixin {
   List<CateItemModel> cateItemList = [];
   List<CateItemModel> cate2ItemList = [];
 
@@ -58,7 +59,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 onTap: () {
                   setState(() {
                     _selectIndex = index;
-                    _selectCateId=cateItemList[index].sId;
+                    _selectCateId = cateItemList[index].sId;
                     _getIndexPListData();
                   });
                 },
@@ -92,7 +93,7 @@ class _CategoryPageState extends State<CategoryPage> {
                         AspectRatio(
                           aspectRatio: 1 / 1.1,
                           child: Image.network(
-                            "${BASE_URL}${cate2ItemList[index].pic.replaceAll("\\", "/")}",
+                            formatImageUrl(cate2ItemList[index].pic),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -111,8 +112,6 @@ class _CategoryPageState extends State<CategoryPage> {
     );
   }
 
-
-
   _getCateData() async {
     Response respons = await dio.get(API_PCATE);
     if (respons.statusCode == 200) {
@@ -120,25 +119,28 @@ class _CategoryPageState extends State<CategoryPage> {
       cateItemList.clear();
       cateItemList = cateModel.result;
 
-
       setState(() {
-        _selectIndex=0;
-        _selectCateId=cateItemList[0].sId;
+        _selectIndex = 0;
+        _selectCateId = cateItemList[0].sId;
         _getIndexPListData();
       });
     }
   }
 
-  _getIndexPListData()async{
-    if(_selectCateId.isNotEmpty){
-      Response respons = await dio.get(API_PCATE,queryParameters:{"pid":_selectCateId});
+  _getIndexPListData() async {
+    if (_selectCateId.isNotEmpty) {
+      Response respons =
+          await dio.get(API_PCATE, queryParameters: {"pid": _selectCateId});
       print(respons.data);
       if (respons.statusCode == 200) {
         CateModel cateModel = CateModel.fromJson(respons.data);
         setState(() {
-          cate2ItemList=cateModel.result;
+          cate2ItemList = cateModel.result;
         });
       }
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

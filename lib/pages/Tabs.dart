@@ -15,7 +15,16 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs> {
   int _currentIndex=1;
 
-  List _PageList=[HomePage(),CategoryPage(),CartPage(),UserPage()];
+  List<Widget> _PageList=[HomePage(),CategoryPage(),CartPage(),UserPage()];
+
+  PageController _pageController;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController=PageController(initialPage: _currentIndex,keepPage: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +33,23 @@ class _TabsState extends State<Tabs> {
       appBar: AppBar(
         title: Text("标题"),
       ),
-      body: _PageList[_currentIndex],
+//      body: _PageList[_currentIndex],
+      body: PageView(
+        controller: _pageController,
+        children: _PageList,
+        onPageChanged:(index){
+          setState(() {
+            _currentIndex=index;
+          });
+        } ,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         fixedColor: Colors.indigo,
         currentIndex: _currentIndex,
         onTap: (index){
           setState(() {
             _currentIndex=index;
+            _pageController.jumpToPage(_currentIndex);
           });
         },
         type: BottomNavigationBarType.fixed,
@@ -43,4 +62,5 @@ class _TabsState extends State<Tabs> {
       ),
     );
   }
+
 }
