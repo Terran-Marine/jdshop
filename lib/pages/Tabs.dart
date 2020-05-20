@@ -32,7 +32,7 @@ class _TabsState extends State<Tabs> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: STANDARD_WIDTH, height: STANDARD_HEIGHT);
     return Scaffold(
-      appBar: AppBar(
+      appBar:_currentIndex!=3? AppBar(
         leading: IconButton(
           icon: Icon(Icons.center_focus_weak),
           onPressed: () {},
@@ -71,7 +71,7 @@ class _TabsState extends State<Tabs> {
             onPressed: () {},
           )
         ],
-      ),
+      ): AppBar(title: Text("我的"),),
 //      body: _PageList[_currentIndex],
       body: PageView(
         controller: _pageController,
