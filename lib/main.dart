@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:jdshop/tools/HttpTool.dart';
+import 'package:nav_router/nav_router.dart';
 import 'AppConfig.dart';
 import 'pages/Tabs.dart';
-import 'package:jdshop/routers/router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -21,7 +21,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     _initHttpDio();
   }
 
@@ -58,6 +57,7 @@ class _MyAppState extends State<MyApp> {
       enableBallisticLoad: true,
       // 可以通过惯性滑动触发加载更多
       child: MaterialApp(
+        theme: ThemeData(primaryColor: Colors.white),
         localizationsDelegates: [
           // this line is important
           RefreshLocalizations.delegate,
@@ -74,8 +74,8 @@ class _MyAppState extends State<MyApp> {
           //print("change language");
           return locale;
         },
-        initialRoute: '/',
-        onGenerateRoute: onGenerateRoute,
+        navigatorKey: navGK,
+        home: Tabs(),
       ),
     );
 

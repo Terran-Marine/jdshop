@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jdshop/AppConfig.dart';
 import 'package:jdshop/model/CateModel.dart';
+import 'package:jdshop/pages/product/ProductListPage.dart';
 import 'package:jdshop/tools/HttpTool.dart';
 import 'package:jdshop/tools/ImageTool.dart';
+import 'package:nav_router/nav_router.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -108,8 +110,9 @@ class _CategoryPageState extends State<CategoryPage>
                       ),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/productList',
-                          arguments: {"cid": cate2ItemList[index].sId});
+                      routePush(ProductListPage(arguments:{"cid": cate2ItemList[index].sId}),);
+//                      Navigator.pushNamed(context, '/productList',
+//                          arguments: {"cid": cate2ItemList[index].sId});
                     },
                   );
                 }),
