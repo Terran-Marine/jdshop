@@ -36,6 +36,7 @@ dependencies:
   nav_router: ^0.0.5
   shared_preferences: ^0.5.7+3
   flutter_custom_dialog: ^1.0.19
+  popup_menu: ^1.0.5
 
 dev_dependencies:
   flutter_test:

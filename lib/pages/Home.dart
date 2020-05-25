@@ -4,7 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:jdshop/model/FocusModel.dart';
 import 'package:jdshop/model/ProductModel.dart';
+import 'package:jdshop/pages/product/ProductContent.dart';
+import 'package:jdshop/pages/product/ProductListPage.dart';
 import 'package:jdshop/tools/HttpTool.dart';
+import 'package:nav_router/nav_router.dart';
 
 import '../AppConfig.dart';
 
@@ -13,11 +16,11 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   List<FocusItemModel> bannerData = [];
   List<ProductItemModel> yourData = [];
   List<ProductItemModel> bestData = [];
-
 
   @override
   void initState() {
@@ -92,30 +95,39 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
         itemBuilder: (context, index) {
           return Container(
             width: 100,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: ScreenUtil().setHeight(140),
-                  width: ScreenUtil().setHeight(140),
-                  margin: EdgeInsets.only(
-                      left: ScreenUtil().setWidth(10.0),
-                      right: ScreenUtil().setWidth(10.0)),
-                  child: Image.network(
-                    "${BASE_URL}${yourData[index].sPic.replaceAll("\\", "/")}",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    child: Text(
-                      "¥ ${yourData[index].price}",
-                      maxLines: 1,
-                      style: TextStyle(color: Colors.red),
+            child: InkWell(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: ScreenUtil().setHeight(140),
+                    width: ScreenUtil().setHeight(140),
+                    margin: EdgeInsets.only(
+                        left: ScreenUtil().setWidth(10.0),
+                        right: ScreenUtil().setWidth(10.0)),
+                    child: Image.network(
+                      "${BASE_URL}${yourData[index].sPic.replaceAll("\\", "/")}",
+                      fit: BoxFit.contain,
                     ),
-                    margin: EdgeInsets.only(top: 5.0),
                   ),
-                )
-              ],
+                  Center(
+                    child: Container(
+                      child: Text(
+                        "¥ ${yourData[index].price}",
+                        maxLines: 1,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      margin: EdgeInsets.only(top: 5.0),
+                    ),
+                  )
+                ],
+              ),
+              onTap: () {
+                routePush(
+                  ProductContentPage(
+                    productId: yourData[index].sId,
+                  ),
+                );
+              },
             ),
 //            decoration: BoxDecoration(
 //                border: Border.all(color: Colors.black12, width: 1)),
@@ -238,48 +250,57 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin{
                       color: Color.fromRGBO(233, 233, 233, 0.8), width: 1)),
               width: width,
               padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    child: Image.network(
-                      "${BASE_URL}${element.pic.replaceAll("\\", "/")}",
-                      fit: BoxFit.contain,
+              child: InkWell(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      child: Image.network(
+                        "${BASE_URL}${element.pic.replaceAll("\\", "/")}",
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
-                    child: Text(
-                      "${element.title}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                    Padding(
+                      padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
+                      child: Text(
+                        "${element.title}",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: ScreenUtil().setHeight(10)),
-                    child: Stack(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "¥${element.price}",
-                            style: TextStyle(color: Colors.red, fontSize: 16),
+                    Padding(
+                      padding: EdgeInsets.only(top: ScreenUtil().setHeight(10)),
+                      child: Stack(
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "¥${element.price}",
+                              style: TextStyle(color: Colors.red, fontSize: 16),
+                            ),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text("¥${element.oldPrice}",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                  decoration: TextDecoration.lineThrough)),
-                        ),
-                      ],
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text("¥${element.oldPrice}",
+                                style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.lineThrough)),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                onTap: () {
+                  routePush(
+                    ProductContentPage(
+                      productId: element.sId,
+                    ),
+                  );
+                },
               ),
             ))
         .toList();
