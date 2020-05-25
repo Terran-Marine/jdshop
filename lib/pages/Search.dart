@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:jdshop/widget/JdText.dart';
+import 'package:jdshop/tools/SharedPreferencesTool.dart';
+import 'package:nav_router/nav_router.dart';
+import 'package:jdshop/pages/product/ProductListPage.dart';
+import 'package:nav_router/src/util.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -9,6 +12,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+
+  TextEditingController _searchController = new TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,17 +36,22 @@ class _SearchPageState extends State<SearchPage> {
         title: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.only(
-              left: ScreenUtil().setWidth(10),
-              right: ScreenUtil().setWidth(10)),
+              left: ScreenUtil().setWidth(15),
+              right: ScreenUtil().setWidth(15)),
           decoration: BoxDecoration(
               color: Color.fromRGBO(233, 233, 233, 0.8),
               borderRadius: BorderRadius.circular(30)),
           height: ScreenUtil().setHeight(68),
           child: TextField(
+            textInputAction:TextInputAction.search ,
+            onSubmitted: (keyWord){
+              _searchProduct(keyWord);
+            },
+            controller: _searchController,
             maxLines: 1,
             decoration: InputDecoration(
+              contentPadding:EdgeInsets.all(0) ,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none)),
           ),
         ),
@@ -55,7 +67,9 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              _searchProduct(    _searchController.text);
+            },
           )
         ],
       ),
@@ -108,9 +122,6 @@ class _SearchPageState extends State<SearchPage> {
                 flex: 1,
                 child: SizedBox(),
               ),
-
-
-
               InkWell(
                 child: Icon(Icons.delete,size: 26,),
                 onTap: (){
@@ -170,5 +181,16 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     return temp;
+  }
+
+
+  //搜索跳转
+  void _searchProduct(String keyWord) {
+//    removeRoute(routerUtil(type:RouterType.cupertino,widget:ProductListPage(arguments:{"search": keyWord})));
+
+
+    pop();
+    routePush(ProductListPage(arguments:{"search": keyWord}),);
+
   }
 }

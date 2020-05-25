@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:jdshop/tools/HttpTool.dart';
 import 'package:nav_router/nav_router.dart';
 import 'AppConfig.dart';
@@ -22,6 +23,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _initHttpDio();
+    SharedPreferencesTool.getInstance();
   }
 
   void _initHttpDio() {

@@ -268,12 +268,21 @@ class _ProductListPageState extends State<ProductListPage> {
       productList.clear();
     }
 
-    Response respons = await dio.get(API_PLIST, queryParameters: {
-      "cid": widget.arguments['cid'],
+    Map<String,dynamic> parameters = {
       "page": _page,
       "pageSize": _pageSize,
       "sort": _sort,
-    });
+    };
+
+    if (widget.arguments['cid'] != null) {
+      parameters["cid"] = widget.arguments['cid'];
+    }
+
+    if (widget.arguments['search'] != null) {
+      parameters["search"] = widget.arguments['search'];
+    }
+
+    Response respons = await dio.get(API_PLIST, queryParameters: parameters);
 
     if (respons.statusCode == 200 && respons.data != null) {
       ProductModel productModel = ProductModel.fromJson(respons.data);
