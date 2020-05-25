@@ -1,5 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+const String SEARCH_HISTORY="SEARCH_HISTORY";
+
+
 class SharedPreferencesTool {
   SharedPreferences prefs;
 
@@ -42,9 +45,9 @@ class SharedPreferencesTool {
     prefs.setStringList(key, value);
   }
 
-  /**
-   * 维护一个不空,不重复的List<String>
-   * */
+  ///  维护一个不空,不重复的List<String>
+  /// [key] : list的key
+  /// [itemKey] : 单个元素的key
   addStringList(String key, String value) {
     List<String> temp = prefs.getStringList(key);
     if (temp == null) {
@@ -55,7 +58,41 @@ class SharedPreferencesTool {
         temp.add(value);
       }
     }
+    prefs.remove(key);
+    prefs.setStringList(key, temp);
   }
+
+
+  /// 删除单个item
+  /// [key] : list的key
+  /// [itemKey] : 单个元素的key
+  bool removeStringList(String key,String itemKey){
+    List<String> temp = prefs.getStringList(key);
+    bool flag=false;
+    if(temp==null||temp.length==0){
+      flag=false;
+    }else{
+      if(temp.contains(itemKey)){
+        temp.remove(itemKey);
+
+        prefs.remove(key);
+        prefs.setStringList(key, temp);
+
+        flag=true;
+      }else{
+        flag=false;
+      }
+    }
+    return flag;
+  }
+
+  cleanStringList(String key){
+    List<String> temp = prefs.getStringList(key);
+    if(temp!=null&&temp.length!=0){
+      prefs.remove(key);
+    }
+  }
+
 
   bool getBool(String key) {
     return prefs.getBool(key);

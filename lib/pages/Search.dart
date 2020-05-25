@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/tools/DialogTool.dart';
 import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:nav_router/nav_router.dart';
 import 'package:jdshop/pages/product/ProductListPage.dart';
 import 'package:nav_router/src/util.dart';
+import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -12,9 +14,13 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   TextEditingController _searchController = new TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _refreshHistoryData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +49,15 @@ class _SearchPageState extends State<SearchPage> {
               borderRadius: BorderRadius.circular(30)),
           height: ScreenUtil().setHeight(68),
           child: TextField(
-            textInputAction:TextInputAction.search ,
-            onSubmitted: (keyWord){
+            textInputAction: TextInputAction.search,
+            onSubmitted: (keyWord) {
               _searchProduct(keyWord);
             },
             controller: _searchController,
             maxLines: 1,
             decoration: InputDecoration(
-              contentPadding:EdgeInsets.all(0) ,
-                border: OutlineInputBorder(
-                    borderSide: BorderSide.none)),
+                contentPadding: EdgeInsets.all(0),
+                border: OutlineInputBorder(borderSide: BorderSide.none)),
           ),
         ),
         actions: <Widget>[
@@ -68,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             onTap: () {
-              _searchProduct(    _searchController.text);
+              _searchProduct(_searchController.text);
             },
           )
         ],
@@ -123,9 +128,16 @@ class _SearchPageState extends State<SearchPage> {
                 child: SizedBox(),
               ),
               InkWell(
-                child: Icon(Icons.delete,size: 26,),
-                onTap: (){
-                  print("清空记录");
+                child: Icon(
+                  Icons.delete,
+                  size: 26,
+                ),
+                onTap: () {
+                  SharedPreferencesTool.getInstance()
+                      .cleanStringList(SEARCH_HISTORY);
+                  setState(() {
+                    searchHistoryList.clear();
+                  });
                 },
               ),
               SizedBox(
@@ -137,24 +149,59 @@ class _SearchPageState extends State<SearchPage> {
         Expanded(
           flex: 1,
           child: Container(
-            child: ListView.builder(
-                itemCount: 10,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: <Widget>[
-                      Text(
-                        "lt-432",
-                        textAlign: TextAlign.start,
-                      ),
-                      Divider()
-                    ],
-                  );
-                }),
+            child: searchHistoryList.length > 0
+                ? ListView.builder(
+                    itemCount: searchHistoryList.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                          onLongPress: () {
+                            ConfirmCancelDialog(
+                                context, "确认删除 ${searchHistoryList[index]} ",
+                                () {
+                              _removeHistoryData(searchHistoryList[index]);
+                            }, () {});
+                          },
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                searchHistoryList[index],
+                                textAlign: TextAlign.start,
+                              ),
+                              Divider()
+                            ],
+                          ));
+                    })
+                : Center(
+                    child: Text("暂无搜索数据"),
+                  ),
           ),
         )
       ],
     );
+  }
+
+  List<String> searchHistoryList = [];
+
+  _removeHistoryData(String keyWord) {
+    SharedPreferencesTool spt = SharedPreferencesTool.getInstance();
+
+    if (spt.removeStringList(SEARCH_HISTORY, keyWord)) {
+      setState(() {
+        searchHistoryList.remove(keyWord);
+      });
+    }
+  }
+
+  _refreshHistoryData() {
+    SharedPreferencesTool spt = SharedPreferencesTool.getInstance();
+
+    List<String> temp = spt.getStringList(SEARCH_HISTORY);
+    if (temp != null && temp.length != 0) {
+      setState(() {
+        searchHistoryList = spt.getStringList(SEARCH_HISTORY);
+      });
+    }
   }
 
   List<Widget> _hotListWidget() {
@@ -183,14 +230,14 @@ class _SearchPageState extends State<SearchPage> {
     return temp;
   }
 
-
   //搜索跳转
   void _searchProduct(String keyWord) {
 //    removeRoute(routerUtil(type:RouterType.cupertino,widget:ProductListPage(arguments:{"search": keyWord})));
-
+    SharedPreferencesTool.getInstance().addStringList(SEARCH_HISTORY, keyWord);
 
     pop();
-    routePush(ProductListPage(arguments:{"search": keyWord}),);
-
+    routePush(
+      ProductListPage(arguments: {"search": keyWord}),
+    );
   }
 }
