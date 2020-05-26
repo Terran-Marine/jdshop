@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 
 class ProductContentHome extends StatefulWidget {
   @override
@@ -83,7 +85,9 @@ class _ProductContentHomeState extends State<ProductContentHome> {
                   ),
                 ],
               ),
-              onTap: () {},
+              onTap: () {
+                _showBottomBar();
+              },
             ),
           ),
           Divider(),
@@ -108,5 +112,108 @@ class _ProductContentHomeState extends State<ProductContentHome> {
       ),
       padding: EdgeInsets.all(ScreenUtil().setWidth(10)),
     );
+  }
+
+  Widget _bottomItemWidget(int index) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          "颜色:",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(width: ScreenUtil().setWidth(10),),
+        Expanded(
+          flex: 1,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(
+                    left: ScreenUtil().setWidth(3),
+                    right: ScreenUtil().setWidth(3)),
+                child: Chip(
+                  label: Text("白色"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    left: ScreenUtil().setWidth(3),
+                    right: ScreenUtil().setWidth(3)),
+                child: Chip(
+                  label: Text("白色"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    left: ScreenUtil().setWidth(3),
+                    right: ScreenUtil().setWidth(3)),
+                child: Chip(
+                  label: Text("白色"),
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  _showBottomBar() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return GestureDetector(
+            onTap: () {},
+            child: Container(
+//              height: ScreenUtil().setWidth(260),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return _bottomItemWidget(index);
+                      },
+                      itemCount: 10,
+                    ),
+                  ),
+                  Divider(),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: TextRadiusBtnWidget(
+                            Colors.red,
+                            Colors.white,
+                            12.0,
+                            "加入购物车",
+                            () {},
+                            height: ScreenUtil().setWidth(46),
+                            marginLR: ScreenUtil().setWidth(10),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: TextRadiusBtnWidget(
+                            Colors.deepOrangeAccent,
+                            Colors.white,
+                            12.0,
+                            "立即购买",
+                            () {},
+                            height: ScreenUtil().setWidth(46),
+                            marginLR: ScreenUtil().setWidth(10),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

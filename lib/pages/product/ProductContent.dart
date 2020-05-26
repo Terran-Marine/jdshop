@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jdshop/pages/product/ProductContentDesc.dart';
 import 'package:jdshop/pages/product/ProductContentEval.dart';
 import 'package:jdshop/pages/product/ProductContentHome.dart';
+import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 import 'package:popup_menu/popup_menu.dart';
 
@@ -21,11 +22,11 @@ class _ProductContentPageState extends State<ProductContentPage> {
   GlobalKey menuBtnKey = GlobalKey();
 
   void onClickMenu(MenuItemProvider item) {
-    print('Click menu -> ${item.menuTitle}');
+    logger.info('Click menu -> ${item.menuTitle}');
   }
 
   void onDismiss() {
-    print('Menu is dismiss');
+    logger.info('Menu is dismiss');
   }
 
   @override
