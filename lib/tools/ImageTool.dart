@@ -1,6 +1,10 @@
 import 'package:jdshop/AppConfig.dart';
 
 String formatImageUrl(String url) {
-  assert (url.isNotEmpty);
+  if(url.isEmpty){
+    return "";
+  }
+
+
   return "${BASE_URL}${url.replaceAll("\\", "/")}";
 }

@@ -1,14 +1,38 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/model/ProductDescModel.dart';
+import 'package:jdshop/tools/HttpTool.dart';
+import 'package:jdshop/tools/ImageTool.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 
+import '../../AppConfig.dart';
+
 class ProductContentHome extends StatefulWidget {
+  String productId;
+
+  ProductContentHome(this.productId);
+
   @override
   _ProductContentHomeState createState() => _ProductContentHomeState();
 }
 
 class _ProductContentHomeState extends State<ProductContentHome> {
+  String _title="";//商品标题
+  String _price="";//价格
+  String _oldPrice="";//原价
+  String _pic="";//商品图片地址
+  String _subTitle="";//内容
+
+  List<Attr> _attrList=[];
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,21 +41,21 @@ class _ProductContentHomeState extends State<ProductContentHome> {
           AspectRatio(
             aspectRatio: 16 / 9,
             child: Image.network(
-              "https://oimagea7.ydstatic.com/image?id=2223816700015246366&product=adpublish",
+              formatImageUrl(_pic),
               fit: BoxFit.cover,
             ),
           ),
           Container(
             padding: EdgeInsets.only(top: ScreenUtil().setWidth(10)),
             child: Text(
-              "所有服务已兑换为 Trojan 版本，请使用支持 Trojan 协议的客户端重新设置服务器信息。设置指南请访问：https://portal.shadowsocks.nz/knowledgebase/151/",
+              _title,
               style: TextStyle(color: Colors.black87, fontSize: 18),
             ),
           ),
           Container(
             padding: EdgeInsets.only(top: ScreenUtil().setWidth(10)),
             child: Text(
-              "所有服务已兑换为 Trojan 版本，请使用支持 Trojan 协议的客户端重新设置服务器信息。设置指南请访问：https://portal.shadowsocks.nz/knowledgebase/151/",
+              _subTitle,
               style: TextStyle(color: Colors.black38, fontSize: 12),
             ),
           ),
@@ -48,7 +72,7 @@ class _ProductContentHomeState extends State<ProductContentHome> {
                       decoration: TextDecoration.lineThrough),
                 ),
                 Text(
-                  "￥9999999",
+                  "￥${_oldPrice}",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -63,7 +87,7 @@ class _ProductContentHomeState extends State<ProductContentHome> {
                   style: TextStyle(fontSize: 20, color: Colors.red),
                 ),
                 Text(
-                  "￥0.01",
+                  "￥${_price}",
                   style: TextStyle(fontSize: 20, color: Colors.red),
                 ),
               ],
@@ -115,49 +139,36 @@ class _ProductContentHomeState extends State<ProductContentHome> {
   }
 
   Widget _bottomItemWidget(int index) {
+    Attr item=_attrList[index];
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Text(
-          "颜色:",
+        Container(child:    Text("${item.cate}: ",
           textAlign: TextAlign.center,
           style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        ),margin: EdgeInsets.only(left: ScreenUtil().setWidth(8)),)
+     ,
         SizedBox(width: ScreenUtil().setWidth(10),),
         Expanded(
           flex: 1,
           child: Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(3),
-                    right: ScreenUtil().setWidth(3)),
-                child: Chip(
-                  label: Text("白色"),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(3),
-                    right: ScreenUtil().setWidth(3)),
-                child: Chip(
-                  label: Text("白色"),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(3),
-                    right: ScreenUtil().setWidth(3)),
-                child: Chip(
-                  label: Text("白色"),
-                ),
-              ),
-            ],
+            children: _getAttrItemList(item.list),
           ),
         )
       ],
     );
+  }
+
+  List<Widget> _getAttrItemList(List<String > list){
+  return  list.map((e) =>   Container(
+      margin: EdgeInsets.only(
+          left: ScreenUtil().setWidth(3),
+          right: ScreenUtil().setWidth(3)),
+      child: Chip(
+        label: Text(e),
+      ),
+    )).toList();
   }
 
   _showBottomBar() {
@@ -175,7 +186,7 @@ class _ProductContentHomeState extends State<ProductContentHome> {
                       itemBuilder: (context, index) {
                         return _bottomItemWidget(index);
                       },
-                      itemCount: 10,
+                      itemCount: _attrList.length,
                     ),
                   ),
                   Divider(),
@@ -215,5 +226,21 @@ class _ProductContentHomeState extends State<ProductContentHome> {
             ),
           );
         });
+  }
+
+  _refreshData() async{
+    Response respons = await dio.get(API_PCONTENT, queryParameters: {"id":widget.productId});
+
+    if (respons.statusCode == 200 && respons.data != null) {
+      ProductDescModel productDescModel = ProductDescModel.fromJson(respons.data);
+        setState(() {
+          _title= productDescModel.result.title;
+          _price= productDescModel.result.price;
+          _oldPrice= productDescModel.result.oldPrice;
+          _pic= productDescModel.result.pic;
+          _subTitle= productDescModel.result.subTitle;
+          _attrList= productDescModel.result.attr;
+        });
+    }
   }
 }

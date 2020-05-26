@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:jdshop/tools/HttpTool.dart';
 import 'package:nav_router/nav_router.dart';
+import 'package:simple_logger/simple_logger.dart';
 import 'AppConfig.dart';
 import 'pages/Tabs.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -22,16 +24,21 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _initLogger();
     _initHttpDio();
     SharedPreferencesTool.getInstance();
+  }
+
+  void _initLogger() {
+    logger.setLevel(Level.INFO,
+      includeCallerInfo: true,);
   }
 
   void _initHttpDio() {
     dio.options.receiveTimeout = RECEIVE_TIMEOUT; //接收数据的最长时限
     dio.options.baseUrl =
         BASE_URL; //请求基地址,可以包含子路径，如: "https://www.google.com/api/".
-    dio.interceptors.add(LogInterceptor(responseBody: true,requestBody: true)); //开启请求日志
-//    dio.interceptors.add(myInterceptorsWrapper);
+    dio.interceptors.add(networkLogInterceptor); //开启请求日志
   }
 
 
@@ -87,4 +94,6 @@ class _MyAppState extends State<MyApp> {
 //      onGenerateRoute: onGenerateRoute,
 //    );
   }
+
+
 }
