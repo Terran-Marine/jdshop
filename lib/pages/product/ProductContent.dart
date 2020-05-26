@@ -96,7 +96,7 @@ class _ProductContentPageState extends State<ProductContentPage> {
               child: TabBarView(
                 children: <Widget>[
                   ProductContentHome(widget.productId),
-                  ProductContentDesc(),
+                  ProductContentDesc(widget.productId),
                   ProductContentEval(),
                 ],
               ),

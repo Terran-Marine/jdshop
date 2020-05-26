@@ -1,13 +1,40 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:jdshop/AppConfig.dart';
+import 'package:jdshop/tools/LoggerTool.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ProductContentDesc extends StatefulWidget {
+ final String productId;
+
+  ProductContentDesc(this.productId);
+
   @override
   _ProductContentDescState createState() => _ProductContentDescState();
 }
 
-class _ProductContentDescState extends State<ProductContentDesc> {
+class _ProductContentDescState extends State<ProductContentDesc> with AutomaticKeepAliveClientMixin{
+  final Completer<WebViewController> _controller =
+  Completer<WebViewController>();
+
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text("详情页"),);
+    return WebView(
+      initialUrl: "${HTML_PCONTENT}${widget.productId}",
+      javascriptMode: JavascriptMode.disabled,
+      onWebViewCreated: (WebViewController webViewController) {
+        _controller.complete(webViewController);
+      },
+      onPageStarted: (String url) {
+        logger.info('Page started loading: $url');
+      },
+      onPageFinished: (String url) {
+        logger.info('Page finished loading: $url');
+      },
+    );
   }
+
+  @override
+  bool get wantKeepAlive =>true;
 }

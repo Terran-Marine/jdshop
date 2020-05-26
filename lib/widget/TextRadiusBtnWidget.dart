@@ -18,6 +18,7 @@ class TextRadiusBtnWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
+        padding: EdgeInsets.only(left: ScreenUtil().setWidth(10), right: ScreenUtil().setWidth(10)),
         margin: EdgeInsets.only(left: marginLR, right: marginLR),
         height: height,
         decoration: BoxDecoration(

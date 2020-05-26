@@ -7,6 +7,7 @@ import 'package:jdshop/model/ProductModel.dart';
 import 'package:jdshop/pages/product/ProductContent.dart';
 import 'package:jdshop/pages/product/ProductListPage.dart';
 import 'package:jdshop/tools/HttpTool.dart';
+import 'package:jdshop/widget/MainAppBarWidget.dart';
 import 'package:nav_router/nav_router.dart';
 
 import '../AppConfig.dart';
@@ -310,14 +311,17 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        _getBanner(),
-        _titleWidget("猜你喜欢"),
-        _getYourProduct(),
-        _titleWidget("热门商品"),
-        _getHotProduct(),
-      ],
+    return Scaffold(
+      appBar: mainAppBarWidget(),
+      body: ListView(
+        children: <Widget>[
+          _getBanner(),
+          _titleWidget("猜你喜欢"),
+          _getYourProduct(),
+          _titleWidget("热门商品"),
+          _getHotProduct(),
+        ],
+      ),
     );
   }
 

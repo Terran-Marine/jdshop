@@ -1,15 +1,16 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:jdshop/provider/Counter.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:jdshop/tools/HttpTool.dart';
 import 'package:nav_router/nav_router.dart';
 import 'package:simple_logger/simple_logger.dart';
 import 'AppConfig.dart';
-import 'pages/Tabs.dart';
+import 'pages/HomeTabsPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,8 +31,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _initLogger() {
-    logger.setLevel(Level.INFO,
-      includeCallerInfo: true,);
+    logger.setLevel(
+      Level.INFO,
+      includeCallerInfo: true,
+    );
   }
 
   void _initHttpDio() {
@@ -41,9 +44,17 @@ class _MyAppState extends State<MyApp> {
     dio.interceptors.add(networkLogInterceptor); //开启请求日志
   }
 
-
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Counter()),
+      ],
+      child: _refreshConfiguration(),
+    );
+  }
+
+  RefreshConfiguration _refreshConfiguration() {
     return RefreshConfiguration(
       headerBuilder: () => WaterDropHeader(),
       // 配置默认头部指示器,假如你每个页面的头部指示器都一样的话,你需要设置这个
@@ -66,34 +77,30 @@ class _MyAppState extends State<MyApp> {
       // Viewport不满一屏时,禁用上拉加载更多功能
       enableBallisticLoad: true,
       // 可以通过惯性滑动触发加载更多
-      child: MaterialApp(
-        theme: ThemeData(primaryColor: Colors.white),
-        localizationsDelegates: [
-          // this line is important
-          RefreshLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-
-        ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('zh'),
-        ],
-        localeResolutionCallback:
-            (Locale locale, Iterable<Locale> supportedLocales) {
-          //print("change language");
-          return locale;
-        },
-        navigatorKey: navGK,
-        home: Tabs(),
-      ),
+      child: _materialApp(),
     );
-
-//    return MaterialApp(
-//      initialRoute: '/',
-//      onGenerateRoute: onGenerateRoute,
-//    );
   }
 
-
+  MaterialApp _materialApp() {
+    return MaterialApp(
+      theme: ThemeData(primaryColor: Colors.white),
+      localizationsDelegates: [
+        // this line is important
+        RefreshLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en'),
+        const Locale('zh'),
+      ],
+      localeResolutionCallback:
+          (Locale locale, Iterable<Locale> supportedLocales) {
+        //print("change language");
+        return locale;
+      },
+      navigatorKey: navGK,
+      home: HomeTabsPage(),
+    );
+  }
 }

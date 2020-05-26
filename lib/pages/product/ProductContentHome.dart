@@ -18,7 +18,7 @@ class ProductContentHome extends StatefulWidget {
   _ProductContentHomeState createState() => _ProductContentHomeState();
 }
 
-class _ProductContentHomeState extends State<ProductContentHome> {
+class _ProductContentHomeState extends State<ProductContentHome> with AutomaticKeepAliveClientMixin {
   String _title="";//商品标题
   String _price="";//价格
   String _oldPrice="";//原价
@@ -243,4 +243,7 @@ class _ProductContentHomeState extends State<ProductContentHome> {
         });
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
