@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
-import 'package:jdshop/provider/Counter.dart';
+import 'package:jdshop/provider/ShoppingCartProvider.dart';
+import 'package:jdshop/tools/EventBusTool.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:jdshop/tools/HttpTool.dart';
@@ -44,11 +45,13 @@ class _MyAppState extends State<MyApp> {
     dio.interceptors.add(networkLogInterceptor); //开启请求日志
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Counter()),
+        ChangeNotifierProvider(create: (_) => ShoppingCartProvider()),
       ],
       child: _refreshConfiguration(),
     );
@@ -103,4 +106,6 @@ class _MyAppState extends State<MyApp> {
       home: HomeTabsPage(),
     );
   }
+
+
 }

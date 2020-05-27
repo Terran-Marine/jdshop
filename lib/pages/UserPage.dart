@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jdshop/provider/Counter.dart';
+import 'package:jdshop/provider/ShoppingCartProvider.dart';
 import 'package:provider/provider.dart';
 
 
@@ -12,12 +12,12 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
-    Counter counter  = context.watch<Counter>();
+    ShoppingCartProvider counter  = context.watch<ShoppingCartProvider>();
 
 
     return Container(
       child: Center(
-        child: Text("用户页面 ${counter.count}"),
+//        child: Text("用户页面 ${counter.count}"),
       ),
     );
   }

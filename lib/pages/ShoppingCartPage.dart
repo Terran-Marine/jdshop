@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:jdshop/provider/Counter.dart';
+import 'package:jdshop/provider/ShoppingCartProvider.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/widget/ShoppingItemWidget.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
@@ -16,7 +16,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
   @override
   Widget build(BuildContext context) {
-    Counter counter = context.watch<Counter>();
+    ShoppingCartProvider shoppingCartProvider =
+        context.watch<ShoppingCartProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text("我的购物车"),
@@ -33,12 +34,16 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: Container(color: Colors.black12,child: ListView.builder(
-              itemBuilder: (context, index) {
-                return shoppingCartWidget();
-              },
-              itemCount: 10,
-            ),),
+            child: Container(
+              color: Colors.black12,
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return shoppingCartWidget(
+                      shoppingCartProvider.productList[index],shoppingCartProvider);
+                },
+                itemCount: shoppingCartProvider.productList.length,
+              ),
+            ),
           ),
           Divider(
             height: 1,
@@ -50,12 +55,13 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               children: <Widget>[
                 Checkbox(
                   activeColor: Colors.redAccent,
-                  value: _allSelectFlag,
+                  value: shoppingCartProvider.allProductSelect,
                   checkColor: Colors.white,
                   onChanged: (bool b) {
-                    setState(() {
-                      _allSelectFlag = b;
-                    });
+                    shoppingCartProvider.   changeAllProductSelect(b);
+//                    setState(() {
+//                      _allSelectFlag = b;
+//                    });
                   },
                 ),
                 Text("全选"),
@@ -67,7 +73,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   Colors.redAccent,
                   Colors.white,
                   ScreenUtil().setWidth(10.0),
-                  "结算",
+                  "结算 ¥${shoppingCartProvider.productTotalPrice}",
                   () {},
                   height: ScreenUtil().setHeight(60),
                 )

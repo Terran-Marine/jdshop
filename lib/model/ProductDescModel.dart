@@ -33,6 +33,8 @@ class ProductDescItemModel {
   List<Attr> attr;
   String subTitle;
   int salecount;
+  int count;
+  bool isCheck;
 
   ProductDescItemModel(
       {this.sId,
@@ -72,6 +74,7 @@ class ProductDescItemModel {
     }
     subTitle = json['sub_title'];
     salecount = json['salecount'];
+    count=1;
   }
 
   Map<String, dynamic> toJson() {

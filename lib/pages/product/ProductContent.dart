@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/event/ProductContextEvent.dart';
 import 'package:jdshop/pages/product/ProductContentDesc.dart';
 import 'package:jdshop/pages/product/ProductContentEval.dart';
 import 'package:jdshop/pages/product/ProductContentHome.dart';
+import 'package:jdshop/tools/EventBusTool.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 import 'package:popup_menu/popup_menu.dart';
@@ -144,7 +146,9 @@ class _ProductContentPageState extends State<ProductContentPage> {
             Colors.white,
             12.0,
             "加入购物车",
-            () {},
+            () {
+              eventBus.fire(ProductContextEvent(JOIN_CAT));
+            },
             height: ScreenUtil().setWidth(46),
             marginLR: ScreenUtil().setWidth(10),
           ),
