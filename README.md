@@ -8,6 +8,9 @@
 - [json2dart](https://javiercbk.github.io/json_to_dart/)
 ## Getting Started
 
+### bug
+- 已知添加购物车时，页面开关次数会导致添加数量翻倍（实际生产中会有服务器接口处理）
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
