@@ -63,7 +63,7 @@ Widget shoppingCartWidget(ProductDescItemModel product,ShoppingCartProvider shop
                         flex: 1,
                         child: SizedBox(),
                       ),
-                      ShoppingItemNumberWidget(productDescModel: product,),
+                      ShoppingItemNumberWidget(productDescModel: product,isCatPage: true,),
                       SizedBox(
                         width: ScreenUtil().setWidth(15),
                       ),

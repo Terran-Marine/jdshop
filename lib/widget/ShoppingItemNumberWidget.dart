@@ -6,9 +6,11 @@ import 'package:provider/provider.dart';
 
 class ShoppingItemNumberWidget extends StatefulWidget {
   ProductDescItemModel productDescModel;
+  bool isCatPage;
 
+  ShoppingItemNumberWidget({this.productDescModel, this.isCatPage});
 
-  ShoppingItemNumberWidget({this.productDescModel});
+//  ShoppingItemNumberWidget({this.productDescModel});
 
   @override
   _ShoppingItemNumberWidgetState createState() =>
@@ -16,14 +18,10 @@ class ShoppingItemNumberWidget extends StatefulWidget {
 }
 
 class _ShoppingItemNumberWidgetState extends State<ShoppingItemNumberWidget> {
-
-
   @override
   Widget build(BuildContext context) {
-
-
     ShoppingCartProvider shoppingCartProvider =
-    context.watch<ShoppingCartProvider>();
+        context.watch<ShoppingCartProvider>();
 
     return Container(
       height: ScreenUtil().setWidth(30),
@@ -50,12 +48,14 @@ class _ShoppingItemNumberWidgetState extends State<ShoppingItemNumberWidget> {
               ),
               onTap: () {
                 if (widget.productDescModel.count > 1) {
-
-                  shoppingCartProvider.lessProductNumber(widget.productDescModel.sId);
-
-//                  setState(() {
-//                    --widget.productDescModel.count;
-//                  });
+                  if (widget.isCatPage) {
+                    shoppingCartProvider
+                        .lessProductNumber(widget.productDescModel.sId);
+                  } else {
+                    setState(() {
+                      --widget.productDescModel.count;
+                    });
+                  }
                 }
               },
             ),
@@ -69,23 +69,31 @@ class _ShoppingItemNumberWidgetState extends State<ShoppingItemNumberWidget> {
                       left: BorderSide(width: 1, color: Colors.grey),
                       right: BorderSide(width: 1, color: Colors.grey))),
               child: Text("${widget.productDescModel.count}"),
+//              child: Text("${shoppingCartProvider.getCountBuId(widget.productDescModel.sId)}"),
             ),
           ),
           Expanded(
             flex: 2,
-            child: InkWell(child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                "+",
-                textAlign: TextAlign.center,
+            child: InkWell(
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  "+",
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),onTap: (){
-
-              shoppingCartProvider.addProductNumber(widget.productDescModel.sId);
-//              setState(() {
-//                ++widget.productDescModel.count;
-//              });
-            },),
+              onTap: () {
+                if (widget.isCatPage) {
+                  shoppingCartProvider
+                      .addProductNumber(widget.productDescModel.sId);
+                } else {
+                  setState(() {
+                    ++widget.productDescModel.count;
+                  });
+                }
+//
+              },
+            ),
           ),
         ],
       ),

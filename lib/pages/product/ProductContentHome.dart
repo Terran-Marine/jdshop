@@ -228,7 +228,7 @@ class _ProductContentHomeState extends State<ProductContentHome>
                       children: <Widget>[
                         Text("数量"),
                         SizedBox(width: ScreenUtil().setWidth(10),),
-                        ShoppingItemNumberWidget(productDescModel: _productDescModel)
+                        ShoppingItemNumberWidget(productDescModel: _productDescModel,isCatPage: false,)
                       ],
                     ),
                   ),

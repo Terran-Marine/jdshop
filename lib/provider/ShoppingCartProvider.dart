@@ -30,6 +30,17 @@ class ShoppingCartProvider with ChangeNotifier, DiagnosticableTreeMixin {
 
   }
 
+ int getCountBuId(String id){
+   ProductDescItemModel curProductDescItemModel = _productList
+       .firstWhere((element) => id == element.sId,orElse: ()=>null);
+
+   if (curProductDescItemModel != null) {
+     return curProductDescItemModel.count;
+   }else{
+     return 0;
+   }
+ }
+
   changeAllProductSelect(bool b){
     _productList.forEach((element) { element.isCheck=b;});
     notifyListeners();
