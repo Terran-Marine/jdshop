@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:jdshop/provider/ShoppingCartProvider.dart';
@@ -29,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     _initLogger();
     _initHttpDio();
     SharedPreferencesTool.getInstance();
+
   }
 
   void _initLogger() {
@@ -87,6 +89,7 @@ class _MyAppState extends State<MyApp> {
   MaterialApp _materialApp() {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.white),
+      builder:  BotToastInit(),
       localizationsDelegates: [
         // this line is important
         RefreshLocalizations.delegate,
@@ -102,6 +105,7 @@ class _MyAppState extends State<MyApp> {
         //print("change language");
         return locale;
       },
+      navigatorObservers: [BotToastNavigatorObserver()],
       navigatorKey: navGK,
       home: HomeTabsPage(),
     );

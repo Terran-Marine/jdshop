@@ -35,7 +35,6 @@ class _ProductContentHomeState extends State<ProductContentHome>
 //  String _pic = ""; //商品图片地址
 //  String _subTitle = ""; //内容
 
-
   ProductDescItemModel _productDescModel;
 
   List<Attr> _attrList = [];
@@ -60,28 +59,28 @@ class _ProductContentHomeState extends State<ProductContentHome>
 
   @override
   Widget build(BuildContext context) {
-     shoppingCartProvider = context.watch<ShoppingCartProvider>();
+    shoppingCartProvider = context.watch<ShoppingCartProvider>();
     return Container(
       child: ListView(
         children: <Widget>[
           AspectRatio(
             aspectRatio: 16 / 9,
             child: Image.network(
-              formatImageUrl(_productDescModel?.pic??""),
+              formatImageUrl(_productDescModel?.pic ?? ""),
               fit: BoxFit.cover,
             ),
           ),
           Container(
             padding: EdgeInsets.only(top: ScreenUtil().setWidth(10)),
             child: Text(
-              _productDescModel?.title??"",
+              _productDescModel?.title ?? "",
               style: TextStyle(color: Colors.black87, fontSize: 18),
             ),
           ),
           Container(
             padding: EdgeInsets.only(top: ScreenUtil().setWidth(10)),
             child: Text(
-              _productDescModel?.subTitle??"",
+              _productDescModel?.subTitle ?? "",
               style: TextStyle(color: Colors.black38, fontSize: 12),
             ),
           ),
@@ -98,7 +97,7 @@ class _ProductContentHomeState extends State<ProductContentHome>
                       decoration: TextDecoration.lineThrough),
                 ),
                 Text(
-                  "￥${_productDescModel?.oldPrice??0}",
+                  "￥${_productDescModel?.oldPrice ?? 0}",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -113,7 +112,7 @@ class _ProductContentHomeState extends State<ProductContentHome>
                   style: TextStyle(fontSize: 20, color: Colors.red),
                 ),
                 Text(
-                  "￥${_productDescModel?.price??0}",
+                  "￥${_productDescModel?.price ?? 0}",
                   style: TextStyle(fontSize: 20, color: Colors.red),
                 ),
               ],
@@ -223,12 +222,19 @@ class _ProductContentHomeState extends State<ProductContentHome>
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: ScreenUtil().setWidth(10),bottom: ScreenUtil().setWidth(15)),
+                    margin: EdgeInsets.only(
+                        left: ScreenUtil().setWidth(10),
+                        bottom: ScreenUtil().setWidth(15)),
                     child: Row(
                       children: <Widget>[
                         Text("数量"),
-                        SizedBox(width: ScreenUtil().setWidth(10),),
-                        ShoppingItemNumberWidget(productDescModel: _productDescModel,isCatPage: false,)
+                        SizedBox(
+                          width: ScreenUtil().setWidth(10),
+                        ),
+                        ShoppingItemNumberWidget(
+                          productDescModel: _productDescModel,
+                          isCatPage: false,
+                        )
                       ],
                     ),
                   ),
@@ -245,7 +251,8 @@ class _ProductContentHomeState extends State<ProductContentHome>
                             12.0,
                             "加入购物车",
                             () {
-                              shoppingCartProvider.addProduct(_productDescModel);
+                              shoppingCartProvider
+                                  .addProduct(_productDescModel);
                               pop();
                             },
                             height: ScreenUtil().setWidth(46),
@@ -282,8 +289,7 @@ class _ProductContentHomeState extends State<ProductContentHome>
       ProductDescModel productDescModel =
           ProductDescModel.fromJson(respons.data);
       setState(() {
-
-        _productDescModel=productDescModel.result;
+        _productDescModel = productDescModel.result;
 
         _attrList = productDescModel.result.attr;
       });

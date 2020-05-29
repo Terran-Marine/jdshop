@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jdshop/event/ProductContextEvent.dart';
+import 'package:jdshop/pages/ShoppingCartPage.dart';
 import 'package:jdshop/pages/product/ProductContentDesc.dart';
 import 'package:jdshop/pages/product/ProductContentEval.dart';
 import 'package:jdshop/pages/product/ProductContentHome.dart';
 import 'package:jdshop/tools/EventBusTool.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
+import 'package:nav_router/nav_router.dart';
 import 'package:popup_menu/popup_menu.dart';
 
 class ProductContentPage extends StatefulWidget {
-  String productId;
+  final String productId;
 
   ProductContentPage({this.productId});
 
@@ -124,19 +126,24 @@ class _ProductContentPageState extends State<ProductContentPage> {
         Container(
           width: 100,
           height: ScreenUtil().setWidth(65),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.shopping_cart,
-                size: 20,
-              ),
-              Text(
-                "购物车",
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
+          child: InkWell(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.shopping_cart,
+                  size: 20,
+                ),
+                Text(
+                  "购物车",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+            onTap: () {
+              routePush(ShoppingCartPage());
+            },
           ),
         ),
         Expanded(

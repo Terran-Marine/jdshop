@@ -12,7 +12,7 @@ class ShoppingCartPage extends StatefulWidget {
 }
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
-  bool _allSelectFlag = false;
+  bool _isEditMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,11 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         title: Text("我的购物车"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.share),
+            icon: Icon(_isEditMode ? Icons.check : Icons.mode_edit),
             onPressed: () {
-              logger.info("分享");
+              setState(() {
+                _isEditMode = !_isEditMode;
+              });
             },
           )
         ],
@@ -39,7 +41,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   return shoppingCartWidget(
-                      shoppingCartProvider.productList[index],shoppingCartProvider);
+                      shoppingCartProvider.productList[index],
+                      shoppingCartProvider);
                 },
                 itemCount: shoppingCartProvider.productList.length,
               ),
@@ -58,7 +61,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   value: shoppingCartProvider.allProductSelect,
                   checkColor: Colors.white,
                   onChanged: (bool b) {
-                    shoppingCartProvider.   changeAllProductSelect(b);
+                    shoppingCartProvider.changeAllProductSelect(b);
 //                    setState(() {
 //                      _allSelectFlag = b;
 //                    });
@@ -73,8 +76,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   Colors.redAccent,
                   Colors.white,
                   ScreenUtil().setWidth(10.0),
-                  "结算 ¥${shoppingCartProvider.productTotalPrice}",
-                  () {},
+                  _isEditMode?   "删除" :   "结算 ¥${shoppingCartProvider.productTotalPrice}",
+                  () {
+
+                    if(_isEditMode){
+                      logger.info("删除");
+                      shoppingCartProvider.removeCheckProduct();
+                    }else{
+                      logger.info("结算");
+                    }
+
+                  },
                   height: ScreenUtil().setHeight(60),
                 )
               ],

@@ -20,8 +20,11 @@ class JdText extends StatelessWidget {
         controller:controller,
         maxLines:this.maxLines ,
         obscureText: this.password,
+        textAlign: TextAlign.center,
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(0),
             hintText: this.text,
+            alignLabelWithHint: true,
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide.none)),

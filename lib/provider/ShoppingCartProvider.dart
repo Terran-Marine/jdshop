@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jdshop/model/ProductDescModel.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
-import 'package:provider/provider.dart';
 
 class ShoppingCartProvider with ChangeNotifier, DiagnosticableTreeMixin {
   List<ProductDescItemModel> _productList = [];
@@ -20,38 +19,42 @@ class ShoppingCartProvider with ChangeNotifier, DiagnosticableTreeMixin {
   get productTotalPrice {
     double total = 0;
     for (var value in productList) {
-      total += double.parse(value.price)*value.count;
+      if (value.isCheck) {
+        total += double.parse(value.price) * value.count;
+       }
     }
     return total;
   }
 
-  get allProductSelect{
-  return !_productList.any((element) => !element.isCheck);
-
+  get allProductSelect {
+    return !_productList.any((element) => !element.isCheck);
   }
 
- int getCountBuId(String id){
-   ProductDescItemModel curProductDescItemModel = _productList
-       .firstWhere((element) => id == element.sId,orElse: ()=>null);
+  int getCountBuId(String id) {
+    ProductDescItemModel curProductDescItemModel = _productList
+        .firstWhere((element) => id == element.sId, orElse: () => null);
 
-   if (curProductDescItemModel != null) {
-     return curProductDescItemModel.count;
-   }else{
-     return 0;
-   }
- }
+    if (curProductDescItemModel != null) {
+      return curProductDescItemModel.count;
+    } else {
+      return 0;
+    }
+  }
 
-  changeAllProductSelect(bool b){
-    _productList.forEach((element) { element.isCheck=b;});
+  changeAllProductSelect(bool b) {
+    _productList.forEach((element) {
+      element.isCheck = b;
+    });
     notifyListeners();
   }
 
   addProduct(ProductDescItemModel productDescItemModel) {
-    ProductDescItemModel curProductDescItemModel = _productList
-        .firstWhere((element) => productDescItemModel.sId == element.sId,orElse: ()=>null);
+    ProductDescItemModel curProductDescItemModel = _productList.firstWhere(
+        (element) => productDescItemModel.sId == element.sId,
+        orElse: () => null);
 
     if (curProductDescItemModel == null) {
-      productDescItemModel.isCheck=true;
+      productDescItemModel.isCheck = true;
       _productList.add(productDescItemModel);
     } else {
       curProductDescItemModel.count += productDescItemModel.count;
@@ -59,38 +62,52 @@ class ShoppingCartProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
-  addProductNumber(String id){
-    ProductDescItemModel curProductDescItemModel = _productList
-        .firstWhere((element) => id == element.sId,orElse: ()=>null);
+  removeProduct(String id){
+    ProductDescItemModel curProductDescItemModel = _productList.firstWhere(
+            (element) => id == element.sId,
+        orElse: () => null);
 
-    if(curProductDescItemModel!=null){
-     ++ curProductDescItemModel.count;
+    if (curProductDescItemModel != null) {
+      _productList.remove(curProductDescItemModel);
     }
     notifyListeners();
   }
 
-  lessProductNumber(String id){
-    ProductDescItemModel curProductDescItemModel = _productList
-        .firstWhere((element) => id == element.sId,orElse: ()=>null);
+  removeCheckProduct(){
+    _productList.removeWhere((element) => element.isCheck);
+    notifyListeners();
+  }
 
-    if(curProductDescItemModel!=null&&curProductDescItemModel.count>1){
-      -- curProductDescItemModel.count;
+  addProductNumber(String id) {
+    ProductDescItemModel curProductDescItemModel = _productList
+        .firstWhere((element) => id == element.sId, orElse: () => null);
+
+    if (curProductDescItemModel != null) {
+      ++curProductDescItemModel.count;
     }
     notifyListeners();
   }
 
-  changeProductSelectState(String id,bool b){
+  lessProductNumber(String id) {
     ProductDescItemModel curProductDescItemModel = _productList
-        .firstWhere((element) => id == element.sId,orElse: ()=>null);
+        .firstWhere((element) => id == element.sId, orElse: () => null);
 
-    if(curProductDescItemModel!=null){
-      curProductDescItemModel.isCheck=b;
-      logger.info("状态改变为${b}");
-    }else{
-      logger.info("找不到id：${id}");
+    if (curProductDescItemModel != null && curProductDescItemModel.count > 1) {
+      --curProductDescItemModel.count;
     }
     notifyListeners();
   }
 
+  changeProductSelectState(String id, bool b) {
+    ProductDescItemModel curProductDescItemModel = _productList
+        .firstWhere((element) => id == element.sId, orElse: () => null);
+
+    if (curProductDescItemModel != null) {
+      curProductDescItemModel.isCheck = b;
+      logger.info("状态改变为$b");
+    } else {
+      logger.info("找不到id：$id");
+    }
+    notifyListeners();
+  }
 }
-
