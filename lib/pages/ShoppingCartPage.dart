@@ -1,9 +1,12 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/pages/order/CheckOutPage.dart';
 import 'package:jdshop/provider/ShoppingCartProvider.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/widget/ShoppingItemWidget.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
+import 'package:nav_router/nav_router.dart';
 import 'package:provider/provider.dart';
 
 class ShoppingCartPage extends StatefulWidget {
@@ -76,16 +79,23 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   Colors.redAccent,
                   Colors.white,
                   ScreenUtil().setWidth(10.0),
-                  _isEditMode?   "删除" :   "结算 ¥${shoppingCartProvider.productTotalPrice}",
+                  _isEditMode
+                      ? "删除"
+                      : "结算 ¥${shoppingCartProvider.productTotalPrice}",
                   () {
-
-                    if(_isEditMode){
+                    if (_isEditMode) {
                       logger.info("删除");
                       shoppingCartProvider.removeCheckProduct();
-                    }else{
-                      logger.info("结算");
-                    }
+                    } else {
 
+                      if(shoppingCartProvider.productList.isEmpty){
+                        BotToast.showText(text: "为选择商品");
+                      }else{
+                        routePush(CheckOutPage(shoppingCartProvider.productList));
+
+                      }
+
+                    }
                   },
                   height: ScreenUtil().setHeight(60),
                 )

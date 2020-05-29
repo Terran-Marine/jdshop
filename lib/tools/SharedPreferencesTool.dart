@@ -1,7 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String SEARCH_HISTORY="SEARCH_HISTORY";
-
+const String SEARCH_HISTORY = "SEARCH_HISTORY";
+const String USER_ID = "USER_ID";
+const String USER_NAME = "USER_NAME";
+const String USER_TEL = "USER_TEL";
+const String USER_SALT = "USER_SALT";
 
 class SharedPreferencesTool {
   SharedPreferences prefs;
@@ -41,6 +44,10 @@ class SharedPreferencesTool {
     prefs.setString(key, value);
   }
 
+  remove(String key) {
+    prefs.remove(key);
+  }
+
   setStringList(String key, List<String> value) {
     prefs.setStringList(key, value);
   }
@@ -62,37 +69,35 @@ class SharedPreferencesTool {
     prefs.setStringList(key, temp);
   }
 
-
   /// 删除单个item
   /// [key] : list的key
   /// [itemKey] : 单个元素的key
-  bool removeStringList(String key,String itemKey){
+  bool removeStringList(String key, String itemKey) {
     List<String> temp = prefs.getStringList(key);
-    bool flag=false;
-    if(temp==null||temp.length==0){
-      flag=false;
-    }else{
-      if(temp.contains(itemKey)){
+    bool flag = false;
+    if (temp == null || temp.length == 0) {
+      flag = false;
+    } else {
+      if (temp.contains(itemKey)) {
         temp.remove(itemKey);
 
         prefs.remove(key);
         prefs.setStringList(key, temp);
 
-        flag=true;
-      }else{
-        flag=false;
+        flag = true;
+      } else {
+        flag = false;
       }
     }
     return flag;
   }
 
-  cleanStringList(String key){
+  cleanStringList(String key) {
     List<String> temp = prefs.getStringList(key);
-    if(temp!=null&&temp.length!=0){
+    if (temp != null && temp.length != 0) {
       prefs.remove(key);
     }
   }
-
 
   bool getBool(String key) {
     return prefs.getBool(key);

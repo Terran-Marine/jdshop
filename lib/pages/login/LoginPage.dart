@@ -1,8 +1,16 @@
+import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/AppConfig.dart';
+import 'package:jdshop/control/UserControl.dart';
+import 'package:jdshop/model/UserModel.dart';
 import 'package:jdshop/pages/login/RegisterPart1.dart';
+import 'package:jdshop/tools/HttpTool.dart';
+import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 import 'package:nav_router/nav_router.dart';
+import 'package:regexpattern/regexpattern.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,6 +18,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _accController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                   left: ScreenUtil().setWidth(15),
                   right: ScreenUtil().setWidth(15)),
               child: TextField(
+                controller: _accController,
                 maxLength: 11,
                 maxLines: 1,
                 keyboardType: TextInputType.number,
@@ -64,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                   left: ScreenUtil().setWidth(15),
                   right: ScreenUtil().setWidth(15)),
               child: TextField(
+                controller: _pwdController,
                 maxLines: 1,
                 keyboardType: TextInputType.number,
                 obscureText: true,
@@ -102,9 +115,44 @@ class _LoginPageState extends State<LoginPage> {
             height: ScreenUtil().setWidth(50),
           ),
           TextRadiusBtnWidget(
-              Colors.red, Colors.white, ScreenUtil().setWidth(20), "登陆", () {}),
+              Colors.red, Colors.white, ScreenUtil().setWidth(20), "登陆", () {
+            _login();
+          }),
         ],
       ),
     );
+  }
+
+  void _login() async {
+    String acc = _accController.text;
+    String pwd = _pwdController.text;
+
+    if (!RegexValidation.hasMatch("+86" + acc, RegexPattern.phone)) {
+      BotToast.showText(text: "号码格式不正确");
+      return;
+    }
+
+    if (pwd.length < 6) {
+      BotToast.showText(text: "请输入六位以上密码");
+      return;
+    }
+
+    Response respons = await dio.post(API_DOLOGIN, data: {
+      "username": acc,
+      "password": pwd,
+    });
+
+    if (respons.statusCode == 200) {
+      UserModel userModel = UserModel.fromJson(respons.data);
+      if (userModel.success) {
+        BotToast.showText(text: userModel.message);
+
+        UserControl.instance.setUserInfo(userModel);
+
+        pop();
+      } else {
+        BotToast.showText(text: userModel.message);
+      }
+    }
   }
 }

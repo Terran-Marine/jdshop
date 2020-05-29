@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/control/UserControl.dart';
+import 'package:jdshop/model/UserModel.dart';
 import 'package:jdshop/pages/login/LoginPage.dart';
 import 'package:jdshop/provider/ShoppingCartProvider.dart';
+import 'package:jdshop/tools/LoggerTool.dart';
+import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 import 'package:nav_router/nav_router.dart';
 import 'package:provider/provider.dart';
 
@@ -10,11 +14,23 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _UserPageState extends State<UserPage> with WidgetsBindingObserver {
+  bool _isLogin = false;
+  Userinfo _userinfo;
+
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    ShoppingCartProvider counter = context.watch<ShoppingCartProvider>();
-
     return Container(
       child: Column(
         children: <Widget>[
@@ -39,53 +55,52 @@ class _UserPageState extends State<UserPage> {
                 SizedBox(
                   width: ScreenUtil().setWidth(20),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: InkWell(
-                    child: Text(
-                      "登陆/注册",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    onTap: () {
-                      routePush(LoginPage());
-                    },
-                  ),
-                ),
-
-//                Expanded(
-//                  flex: 1,
-//                  child: Container(
-//                    height: ScreenUtil().setWidth(80),
-//                    child: Column(
-//                      children: <Widget>[
-//                        Expanded(
-//                          flex: 1,
-//                          child: Container(
-//                            alignment: Alignment.centerLeft,
-//                            child: Text(
-//                              "title",
-//                              textAlign: TextAlign.center,
-//                              style:
-//                                  TextStyle(color: Colors.white, fontSize: 18),
-//                            ),
-//                          ),
-//                        ),
-//                        Expanded(
-//                          flex: 1,
-//                          child: Container(
-//                            alignment: Alignment.centerLeft,
-//                            child: Text(
-//                              "title",
-//                              textAlign: TextAlign.center,
-//                              style: TextStyle(color: Colors.white),
-//                            ),
-//                          ),
-//                        ),
-//                      ],
-//                    ),
-//                  ),
-//                ),
-
+                _isLogin
+                    ? Expanded(
+                        flex: 1,
+                        child: Container(
+                          height: ScreenUtil().setWidth(80),
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    _userinfo?.username ?? "",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Tel:${_userinfo?.username ?? ""}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        flex: 1,
+                        child: InkWell(
+                          child: Text(
+                            "登陆/注册",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onTap: () {
+                            routePush(LoginPage());
+                          },
+                        ),
+                      ),
                 SizedBox(
                   width: ScreenUtil().setWidth(20),
                 ),
@@ -146,7 +161,7 @@ class _UserPageState extends State<UserPage> {
                     Icons.people,
                     color: Colors.black54,
                   ),
-                  title: Text("现在客服"),
+                  title: Text("在线客服"),
                 ),
                 Divider(
                   height: 1,
@@ -154,9 +169,65 @@ class _UserPageState extends State<UserPage> {
                 ),
               ],
             ),
-          )
+          ),
+          _isLogin
+              ? Container(
+                  padding: EdgeInsets.only(bottom: ScreenUtil().setWidth(20)),
+                  child: TextRadiusBtnWidget(Colors.red, Colors.white,
+                      ScreenUtil().setWidth(20), "退出账号", () {
+                    setState(() {
+                      _isLogin = false;
+
+                      UserControl.instance.cleanUserInfo();
+                    });
+                  }),
+                )
+              : SizedBox()
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    logger.info("didChangeDependencies");
+    setState(() {
+      _isLogin = UserControl.instance.isLogin();
+      logger.info(_isLogin);
+
+      if (_isLogin) {
+        _userinfo = UserControl.instance.getUserInfo();
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.paused:
+        break;
+
+      case AppLifecycleState.resumed:
+        setState(() {
+          _isLogin = UserControl.instance.isLogin();
+          logger.info(_isLogin);
+
+          if (_isLogin) {
+            _userinfo = UserControl.instance.getUserInfo();
+          }
+        });
+        break;
+
+      case AppLifecycleState.inactive:
+        break;
+
+      case AppLifecycleState.detached:
+        break;
+    }
+
+    logger.info(state);
   }
 }
