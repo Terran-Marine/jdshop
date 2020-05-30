@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     dio.options.receiveTimeout = RECEIVE_TIMEOUT; //接收数据的最长时限
     dio.options.baseUrl =
         BASE_URL; //请求基地址,可以包含子路径，如: "https://www.google.com/api/".
-//    dio.interceptors.add(networkLogInterceptor); //开启请求日志
+    dio.interceptors.add(networkLogInterceptor); //开启请求日志
   }
 
 
@@ -110,6 +110,4 @@ class _MyAppState extends State<MyApp> {
       home: HomeTabsPage(),
     );
   }
-
-
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jdshop/control/UserControl.dart';
 import 'package:jdshop/model/UserModel.dart';
+import 'package:jdshop/pages/address/AddressListPage.dart';
 import 'package:jdshop/pages/login/LoginPage.dart';
 import 'package:jdshop/provider/ShoppingCartProvider.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
@@ -145,12 +146,17 @@ class _UserPageState extends State<UserPage> with WidgetsBindingObserver {
                   color: Colors.black12,
                   thickness: ScreenUtil().setWidth(10),
                 ),
-                ListTile(
-                  leading: Icon(
-                    Icons.favorite,
-                    color: Colors.lightGreen,
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.favorite,
+                      color: Colors.lightGreen,
+                    ),
+                    title: Text("收货地址"),
                   ),
-                  title: Text("我的收藏"),
+                  onTap: () {
+                    routePush(AddressListPage());
+                  },
                 ),
                 Divider(
                   height: 1,

@@ -7,7 +7,6 @@ import 'package:jdshop/control/UserControl.dart';
 import 'package:jdshop/model/UserModel.dart';
 import 'package:jdshop/pages/login/RegisterPart1.dart';
 import 'package:jdshop/tools/HttpTool.dart';
-import 'package:jdshop/tools/SharedPreferencesTool.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 import 'package:nav_router/nav_router.dart';
 import 'package:regexpattern/regexpattern.dart';
