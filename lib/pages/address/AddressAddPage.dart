@@ -11,6 +11,7 @@ import 'package:jdshop/tools/HttpTool.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
 import 'package:jdshop/tools/SignTools.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
+import 'package:nav_router/nav_router.dart';
 
 class AddressAddPage extends StatefulWidget {
   @override
@@ -137,17 +138,19 @@ class _AddressAddPageState extends State<AddressAddPage> {
   void _addressAdd() async {
     Userinfo userinfo = UserControl.instance.getUserInfo();
 
-    Map<String,dynamic> parame = {
+    Map<String, dynamic> parame = {
       "uid": userinfo.sId,
       "name": _nameController.text,
       "phone": _phoneController.text,
-      "address": "${_address}-${_addressController.text}"
+      "address": "${_address}-${_addressController.text}",
+      "salt": "${userinfo.salt}"
     };
 
-    parame["sign"] = getSign(parame);
+    Response respons = await dio.post(API_ADDADDRESS, data: getSignParame(parame));
 
-    Response respons = await dio.post(API_ADDADDRESS, data: parame);
-
-    if (respons.statusCode == 200 && respons.data != null) {}
+    if (respons.statusCode == 200 && respons.data != null) {
+      BotToast.showText(text: "增加成功");
+      pop();
+    }
   }
 }
