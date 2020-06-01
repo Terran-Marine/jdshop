@@ -1,14 +1,25 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jdshop/AppConfig.dart';
+import 'package:jdshop/control/UserControl.dart';
+import 'package:jdshop/model/DefaultAddressModel.dart';
 import 'package:jdshop/model/ProductDescModel.dart';
+import 'package:jdshop/model/UserModel.dart';
 import 'package:jdshop/pages/address/AddressListPage.dart';
+import 'package:jdshop/pages/order/PayPage.dart';
+import 'package:jdshop/tools/HttpTool.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
+import 'package:jdshop/tools/SignTools.dart';
 import 'package:jdshop/widget/CheckOutItemWidget.dart';
 import 'package:jdshop/widget/TextRadiusBtnWidget.dart';
 import 'package:nav_router/nav_router.dart';
 
 class CheckOutPage extends StatefulWidget {
   final List<ProductDescItemModel> productList;
+
 
   CheckOutPage(this.productList);
 
@@ -17,14 +28,22 @@ class CheckOutPage extends StatefulWidget {
 }
 
 class _CheckOutPageState extends State<CheckOutPage> {
-  bool _hasLocation = true;
+  DefaultAddressItemModel _defaultAddressItemModel;
+  Userinfo userinfo = UserControl.instance.getUserInfo();
+  double _total = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _getDefault();
+  }
 
   @override
   Widget build(BuildContext context) {
-    double total = 0;
+  
     for (var value in widget.productList) {
       if (value.isCheck) {
-        total += double.parse(value.price) * value.count;
+        _total += double.parse(value.price) * value.count;
       }
     }
 
@@ -35,7 +54,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
       body: Column(
         children: <Widget>[
           Container(
-            child: _hasLocation
+            child: _defaultAddressItemModel!=null
                 ? InkWell(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,13 +72,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  "二傻子",
+                                  _defaultAddressItemModel?.name??"",
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 SizedBox(
                                   height: ScreenUtil().setWidth(8),
                                 ),
-                                Text("憨憨市傻子区二货街号")
+                                Text(_defaultAddressItemModel?.address??"")
                               ],
                             ),
                           ),
@@ -129,7 +148,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   width: ScreenUtil().setWidth(3),
                 ),
                 Text(
-                  "¥${total}元",
+                  "¥${_total}元",
                   style: TextStyle(color: Colors.red),
                 ),
                 Expanded(
@@ -142,6 +161,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   ScreenUtil().setWidth(20),
                   "立即下单",
                   () {
+                    _doOrder();
                     logger.info("立即下单");
                   },
                   height: ScreenUtil().setWidth(30),
@@ -152,5 +172,50 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ],
       ),
     );
+  }
+
+  void _getDefault() async {
+
+
+    Map<String, dynamic> parame = {
+      "uid": userinfo.sId,
+      "salt": "${userinfo.salt}"
+    };
+
+    Response respons = await dio.get(API_ONEADDRESSLIST,
+        queryParameters: getSignParame(parame));
+
+    if (respons.statusCode == 200 && respons.data != null) {
+      DefaultAddressModel defaultAddressModel =
+          DefaultAddressModel.fromJson(respons.data);
+
+      logger.info(defaultAddressModel.toString());
+      setState(() {
+        _defaultAddressItemModel = defaultAddressModel.result[0];
+      });
+    }
+  }
+
+  void _doOrder()async{
+    Map<String, dynamic> parame = {
+      "uid": userinfo.sId,
+      "salt": "${userinfo.salt}",
+      "address":_defaultAddressItemModel.address,
+      "phone":_defaultAddressItemModel.phone,
+      "name":_defaultAddressItemModel.name,
+      "all_price":_total.toStringAsFixed(1),
+      "products":json.encode(widget.productList),
+    };
+
+    Response respons = await dio.post(API_DOORDER,
+        data: getSignParame(parame));
+
+    if (respons.statusCode == 200 && respons.data != null) {
+     logger.info(respons.data);
+
+     routePush(PayPage());
+
+
+    }
   }
 }

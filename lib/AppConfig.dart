@@ -15,6 +15,7 @@ const String API_ADDADDRESS = "api/addAddress"; //增加用户收货地址
 const String API_CHANGEDEFAULTADDRESS = "api/changeDefaultAddress"; //修改默认收货地址
 const String API_EDITADDRESSS = "api/editAddress"; //修改收货地址
 const String API_DELETEADDRESS = "api/deleteAddress"; //删除收货地址
+const String API_DOORDER = "api/doOrder"; //提交订单
 
 const num STANDARD_WIDTH = 450;
 const num STANDARD_HEIGHT = 1334;
