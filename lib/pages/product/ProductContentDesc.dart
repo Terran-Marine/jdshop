@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:jdshop/AppConfig.dart';
 import 'package:jdshop/tools/LoggerTool.dart';
+import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ProductContentDesc extends StatefulWidget {
@@ -31,6 +32,9 @@ class _ProductContentDescState extends State<ProductContentDesc> with AutomaticK
       },
       onPageFinished: (String url) {
         logger.info('Page finished loading: $url');
+      },
+      onWebResourceError: (WebResourceError e){
+        logger.info('Err:  ${e.description}\n${e.domain}');
       },
     );
   }
