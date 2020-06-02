@@ -97,11 +97,12 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('en'),
-        const Locale('zh'),
+        const Locale('en',"US"),
+        const Locale('zh',"CH"),
       ],
       localeResolutionCallback:
           (Locale locale, Iterable<Locale> supportedLocales) {
+        logger.info("locale:${locale}");
         //print("change language");
         return locale;
       },

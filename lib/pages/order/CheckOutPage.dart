@@ -20,7 +20,6 @@ import 'package:nav_router/nav_router.dart';
 class CheckOutPage extends StatefulWidget {
   final List<ProductDescItemModel> productList;
 
-
   CheckOutPage(this.productList);
 
   @override
@@ -40,7 +39,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   @override
   Widget build(BuildContext context) {
-  
     for (var value in widget.productList) {
       if (value.isCheck) {
         _total += double.parse(value.price) * value.count;
@@ -54,7 +52,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
       body: Column(
         children: <Widget>[
           Container(
-            child: _defaultAddressItemModel!=null
+            child: _defaultAddressItemModel != null
                 ? InkWell(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -72,13 +70,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  _defaultAddressItemModel?.name??"",
+                                  _defaultAddressItemModel?.name ?? "",
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 SizedBox(
                                   height: ScreenUtil().setWidth(8),
                                 ),
-                                Text(_defaultAddressItemModel?.address??"")
+                                Text(_defaultAddressItemModel?.address ?? "")
                               ],
                             ),
                           ),
@@ -175,8 +173,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
   void _getDefault() async {
-
-
     Map<String, dynamic> parame = {
       "uid": userinfo.sId,
       "salt": "${userinfo.salt}"
@@ -196,26 +192,23 @@ class _CheckOutPageState extends State<CheckOutPage> {
     }
   }
 
-  void _doOrder()async{
+  void _doOrder() async {
     Map<String, dynamic> parame = {
       "uid": userinfo.sId,
       "salt": "${userinfo.salt}",
-      "address":_defaultAddressItemModel.address,
-      "phone":_defaultAddressItemModel.phone,
-      "name":_defaultAddressItemModel.name,
-      "all_price":_total.toStringAsFixed(1),
-      "products":json.encode(widget.productList),
+      "address": _defaultAddressItemModel.address,
+      "phone": _defaultAddressItemModel.phone,
+      "name": _defaultAddressItemModel.name,
+      "all_price": _total.toStringAsFixed(1),
+      "products": json.encode(widget.productList),
     };
 
-    Response respons = await dio.post(API_DOORDER,
-        data: getSignParame(parame));
+    Response respons = await dio.post(API_DOORDER, data: getSignParame(parame));
 
     if (respons.statusCode == 200 && respons.data != null) {
-     logger.info(respons.data);
+      logger.info(respons.data);
 
-     routePush(PayPage());
-
-
+      routePush(PayPage());
     }
   }
 }
